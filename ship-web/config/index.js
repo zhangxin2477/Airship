@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      // '/search': {
+      //   target: 'http://www.galaxyship.con/',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/search': '/'
+      //   }
+      // }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

@@ -3,13 +3,21 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import Vant from 'vant'
+import 'vant/lib/index.css'
+import Axios from 'axios'
 
 Vue.config.productionTip = false
-
+Vue.prototype.$axios = Axios
+// Axios.defaults.baseURL = '/search'
+Vue.use(ElementUI)
+Vue.use(Vant)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  components: { App },
+  components: {App},
   template: '<App/>'
 })
