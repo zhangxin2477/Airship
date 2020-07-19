@@ -15,6 +15,9 @@ class ApiApplicationTests {
     @Resource
     private HdfsService hdfsService;
 
+    @Resource
+    private KafkaService kafkaService;
+
     @Test
     void contextLoads() {
         log.info("{}", hdfsService.mkdir("/zxnode_test"));
