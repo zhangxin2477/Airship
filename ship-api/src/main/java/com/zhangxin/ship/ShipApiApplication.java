@@ -1,6 +1,6 @@
 package com.zhangxin.ship;
 
-import com.zhangxin.ship.api.hadoop.HdfsService;
+import com.zhangxin.ship.api.hadoop.hdfs.HdfsService;
 import com.zhangxin.ship.api.kafka.KafkaService;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.log4j.BasicConfigurator;

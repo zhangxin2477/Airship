@@ -1,4 +1,4 @@
-package com.zhangxin.ship.api.hadoop;
+package com.zhangxin.ship.api.hadoop.hdfs;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
