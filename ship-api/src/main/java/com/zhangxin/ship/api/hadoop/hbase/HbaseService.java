@@ -2,14 +2,17 @@ package com.zhangxin.ship.api.hadoop.hbase;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 public class HbaseService {
@@ -62,6 +65,14 @@ public class HbaseService {
             TableDescriptor tableDescriptor = table.build();
             admin.createTable(tableDescriptor);
         }
+        /* // 创建表
+        HTableDescriptor htd = new HTableDescriptor(TableName.valueOf("teacher_info"));
+        // 用ddl操作器对象：admin 来建表
+        HColumnDescriptor   hd=new HColumnDescriptor("base_info");
+        htd.addFamily(hd);
+        HColumnDescriptor   hd2=new HColumnDescriptor("emp_info");
+        htd.addFamily(hd2);
+        */
     }
 
     //删除表
@@ -99,10 +110,48 @@ public class HbaseService {
      */
     public void getData(String tableName, String rowKey, String colFamily, String col) throws IOException {
         Table table = connection.getTable(TableName.valueOf(tableName));
+        //获取表中的数据
+        ResultScanner scanner = table.getScanner(new Scan());
+        //循环输出表中的数据
+        for (Result result : scanner) {
+            printData(result);
+        }
+
+        //按照条件查询数据
+        //创建查询器
+        Filter filter = new SingleColumnValueFilter(Bytes.toBytes("base"),
+                Bytes.toBytes("name"), CompareOperator.EQUAL, Bytes.toBytes("bookName"));
+        //创建扫描器
+        Scan scan = new Scan();
+        //将查询过滤器的加入到数据表扫描器对象
+        scan.setFilter(filter);
+        //执行查询操作，并获取查询结果
+        scanner = table.getScanner(scan);
+        //输出结果
+        for (Result result : scanner) {
+            printData(result);
+        }
+
+        //按照行查询数据
         Get get = new Get(rowKey.getBytes());
         get.addColumn(colFamily.getBytes(), col.getBytes());
         Result result = table.get(get);
         log.info(new String(result.getValue(colFamily.getBytes(), col.getBytes())));
+        printData(result);
+        log.info("---------------查行键数据结束----------");
         table.close();
+    }
+
+    private void printData(Result result) {
+        byte[] row = result.getRow();
+        log.info("row key is:" + new String(row));
+        List<Cell> listCells = result.listCells();
+        for (Cell cell : listCells) {
+            byte[] familyArray = cell.getFamilyArray();
+            byte[] qualifierArray = cell.getQualifierArray();
+            byte[] valueArray = cell.getValueArray();
+            log.info("row value is:" + new String(familyArray) +
+                    new String(qualifierArray) + new String(valueArray));
+        }
     }
 }
